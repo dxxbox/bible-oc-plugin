@@ -8,15 +8,22 @@
     "build": "tsc -p tsconfig.json",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "test": "vitest run",
-    "verify:contracts": "vitest run tests/unit/contracts.test.ts"
+    "test:coverage": "vitest run --coverage",
+    "verify:contracts": "vitest run tests/unit/contracts.test.ts",
+    "lint": "eslint src tests",
+    "format": "prettier --write 'src/**/*.ts' 'tests/**/*.ts'"
   },
   "engines": {
     "node": ">=20",
     "openclaw": ">=2026.5.18"
   },
   "openclaw": {
-    "extensions": ["./src/index.ts"],
-    "runtimeExtensions": ["./dist/index.js"],
+    "extensions": [
+      "./src/index.ts"
+    ],
+    "runtimeExtensions": [
+      "./dist/index.js"
+    ],
     "setupEntry": "./src/setup-entry.ts",
     "runtimeSetupEntry": "./dist/setup-entry.js",
     "compat": {
@@ -34,8 +41,13 @@
     }
   },
   "devDependencies": {
+    "@eslint/js": "^10.0.1",
     "@types/node": "latest",
+    "@vitest/coverage-v8": "^4.1.8",
+    "eslint": "^10.4.1",
+    "prettier": "^3.8.4",
     "typescript": "latest",
+    "typescript-eslint": "^8.61.0",
     "vitest": "latest"
   }
 }

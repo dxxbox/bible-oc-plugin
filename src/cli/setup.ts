@@ -1,12 +1,12 @@
-import { readFile, writeFile } from "node:fs/promises";
-import { dirname } from "node:path";
-import { mkdir } from "node:fs/promises";
-import { resolveBibleConfig } from "../config/schema.js";
-import { actionLogger } from "../logging.js";
-import type { BibleRuntime } from "../runtime/bible-runtime.js";
-import type { PluginLogger } from "../types/openclaw.js";
+import { readFile, writeFile } from 'node:fs/promises';
+import { dirname } from 'node:path';
+import { mkdir } from 'node:fs/promises';
+import { resolveBibleConfig } from '../config/schema.js';
+import { actionLogger } from '../logging.js';
+import type { BibleRuntime } from '../runtime/bible-runtime.js';
+import type { PluginLogger } from '../types/openclaw.js';
 
-const DEFAULT_OPENCLAW_CONFIG_PATH = `${process.env.HOME ?? "."}/.openclaw/openclaw.json`;
+const DEFAULT_OPENCLAW_CONFIG_PATH = `${process.env.HOME ?? '.'}/.openclaw/openclaw.json`;
 
 export interface SetupOptions {
   baseUrl: string;
@@ -21,8 +21,14 @@ export interface SetupOptions {
   configPath?: string;
 }
 
-export async function executeBibleSetup(opts: SetupOptions, deps: { runtimeFactory: (config: ReturnType<typeof resolveBibleConfig>) => BibleRuntime; logger?: PluginLogger }): Promise<Record<string, unknown>> {
-  const action = actionLogger(deps.logger, "cli.setup", { write: opts.write === true, hasConfigPath: Boolean(opts.configPath) });
+export async function executeBibleSetup(
+  opts: SetupOptions,
+  deps: { runtimeFactory: (config: ReturnType<typeof resolveBibleConfig>) => BibleRuntime; logger?: PluginLogger },
+): Promise<Record<string, unknown>> {
+  const action = actionLogger(deps.logger, 'cli.setup', {
+    write: opts.write === true,
+    hasConfigPath: Boolean(opts.configPath),
+  });
   action.start();
   try {
     const config = resolveBibleConfig({
@@ -40,7 +46,7 @@ export async function executeBibleSetup(opts: SetupOptions, deps: { runtimeFacto
     const nextConfig = {
       plugins: {
         entries: {
-          "bible-oc-plugin": { enabled: true, config: publicConfig(config) },
+          'bible-oc-plugin': { enabled: true, config: publicConfig(config) },
         },
         slots: { contextEngine: config.contextEngineId },
       },
@@ -64,16 +70,17 @@ export function resolveConfigPath(configPath?: string): string {
 async function writeOpenClawConfig(path: string, patch: Record<string, unknown>): Promise<void> {
   let existing: Record<string, unknown> = {};
   try {
-    existing = JSON.parse(await readFile(path, "utf8")) as Record<string, unknown>;
+    existing = JSON.parse(await readFile(path, 'utf8')) as Record<string, unknown>;
   } catch (err) {
-    if ((err as NodeJS.ErrnoException).code !== "ENOENT") throw err;
+    if ((err as NodeJS.ErrnoException).code !== 'ENOENT') throw err;
   }
   const merged = deepMerge(existing, patch);
   await mkdir(dirname(path), { recursive: true });
-  await writeFile(path, JSON.stringify(merged, null, 2) + "\n", "utf8");
+  await writeFile(path, JSON.stringify(merged, null, 2) + '\n', 'utf8');
 }
 
 function publicConfig(config: ReturnType<typeof resolveBibleConfig>): Record<string, unknown> {
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { compiledBypassPatterns, ...rest } = config;
   return rest;
 }
@@ -87,5 +94,5 @@ function deepMerge(target: Record<string, unknown>, patch: Record<string, unknow
 }
 
 function isRecord(value: unknown): value is Record<string, unknown> {
-  return typeof value === "object" && value !== null && !Array.isArray(value);
+  return typeof value === 'object' && value !== null && !Array.isArray(value);
 }

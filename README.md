@@ -41,3 +41,33 @@
 - 捕获与归档以 OpenClaw 会话生命周期为触发源，以 BiBLE Atlas memory ingest/commit API 为持久化目标。
 - 工具层对外暴露 OpenClaw agent tool，对内统一走插件 HTTP client；`bible_cli_go` 的命令能力作为行为契约参考，不要求插件 shell 调用 CLI。
 - `bypassSessionPatterns` 是运行时旁路策略。命中后插件不注入召回内容、不捕获会话内容，只保留必要的 session lifecycle 观测日志。
+
+## Quick Start
+
+```bash
+git clone <repo-url> bible-oc-plugin
+cd bible-oc-plugin
+npm ci                  # install devDependencies only (zero prod deps)
+npm run build           # compile TypeScript
+npm test                # run tests (9 suites, 29 tests)
+bash deploy.sh --help   # deploy to local OpenClaw
+```
+
+To enable the plugin with a running BiBLE Atlas service:
+
+```bash
+bash deploy.sh --base-url http://127.0.0.1:5555
+openclaw bible status
+```
+
+## Project Relations
+
+This repository is part of the BiBLE ecosystem:
+
+| Project | Role |
+|---------|------|
+| [BiBLE-Atlas](https://github.com/dxxbox/BiBLE-Atlas) | Upstream monorepo — the Python/Go BiBLE Atlas HTTP service this plugin connects to |
+| `bible-oc-plugin` (this repo) | OpenClaw TypeScript plugin — context engine, tools, CLI, lifecycle hooks |
+| [bible-hermes-plugin](https://github.com/dxxbox/bible-hermes-plugin) | Sibling Python plugin for the Hermes agent platform |
+| [bible-cc-plugin](https://github.com/dxxbox/bible-cc-plugin) | Sibling skeleton plugin (in development) |
+
